@@ -1,0 +1,26 @@
+name: Deploy to WordPress.org
+on:
+  release:
+    # run only when a new release is published, but not when it's classified as a pre-release.
+    types: [released]
+jobs:
+  deploy:
+    name: Deploy to WP.org
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Using 10up's deployment action, we deploy our plugin to the WordPress repository.
+    # You can view that action here: <https://github.com/10up/action-wordpress-plugin-deploy>
+    - name: WordPress Plugin Deploy
+      uses: 10up/action-wordpress-plugin-deploy@stable
+
+      # Here, we are using action secrets SVN_USERNAME, SVN_PASSWORD, and PLUGIN_SLUG which
+      # authenticate with WordPress and lets the action deploy our plugin to the repository.
+      #
+      # To learn more about setting and using secrets with Github Actions, check out: <https://docs.github.com/en/actions/security-guides/encrypted-secrets?tool=webui#about-encrypted-secrets>
+      env:
+        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        SLUG: exclude-post-types-for-weglot
